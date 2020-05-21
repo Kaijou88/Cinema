@@ -1,4 +1,4 @@
-package mate.academy.cinema.util;
+package com.project.cinema.util;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;

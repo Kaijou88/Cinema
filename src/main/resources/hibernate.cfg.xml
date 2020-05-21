@@ -13,6 +13,6 @@
         <property name="show_sql">true</property>
         <property name="hibernate.hbm2ddl.auto">create-drop</property>
 
-        <mapping class="mate.academy.cinema.model.Movie"/>
+        <mapping class="com.project.cinema.model.Movie"/>
     </session-factory>
 </hibernate-configuration>

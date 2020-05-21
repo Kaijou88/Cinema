@@ -1,12 +1,12 @@
-package mate.academy.cinema.dao.impl;
+package com.project.cinema.dao.impl;
 
+import com.project.cinema.dao.MovieDao;
+import com.project.cinema.exceptions.DataProcessingException;
+import com.project.cinema.lib.Dao;
+import com.project.cinema.model.Movie;
+import com.project.cinema.util.HibernateUtil;
 import java.util.List;
 import javax.persistence.criteria.CriteriaQuery;
-import mate.academy.cinema.dao.MovieDao;
-import mate.academy.cinema.exceptions.DataProcessingException;
-import mate.academy.cinema.lib.Dao;
-import mate.academy.cinema.model.Movie;
-import mate.academy.cinema.util.HibernateUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
@@ -21,15 +21,15 @@ public class MovieDaoImpl implements MovieDao {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            Long itemId = (Long) session.save(movie);
+            Long movieId = (Long) session.save(movie);
             transaction.commit();
-            movie.setId(itemId);
+            movie.setId(movieId);
             return movie;
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
             }
-            throw new RuntimeException("Can't insert Movie entity", e);
+            throw new DataProcessingException("Can't insert Movie entity", e);
 
         }
     }
@@ -42,7 +42,7 @@ public class MovieDaoImpl implements MovieDao {
             criteriaQuery.from(Movie.class);
             return session.createQuery(criteriaQuery).getResultList();
         } catch (Exception e) {
-            throw new DataProcessingException("Error retrieving all movies");
+            throw new DataProcessingException("Error retrieving all movies", e);
         }
     }
 }

@@ -1,4 +1,4 @@
-package mate.academy.cinema.lib;
+package com.project.cinema.lib;
 
 import java.io.File;
 import java.io.IOException;
