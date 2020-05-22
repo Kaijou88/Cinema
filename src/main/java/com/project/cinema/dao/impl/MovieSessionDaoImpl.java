@@ -29,13 +29,17 @@ public class MovieSessionDaoImpl implements MovieSessionDao {
             Predicate finalPredicate = criteriaBuilder.and(predicateForMovieId, predicateForDate);
             CriteriaQuery<MovieSession> criteriaQuery = query.where(finalPredicate);
             return session.createQuery(criteriaQuery).getResultList();
+        } catch (Exception e) {
+            throw new DataProcessingException("Can't find any available sessions", e);
         }
     }
 
     @Override
     public MovieSession add(MovieSession movieSession) {
         Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        Session session = null;
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
             transaction = session.beginTransaction();
             Long movieSessionId = (Long) session.save(movieSession);
             transaction.commit();
@@ -46,7 +50,10 @@ public class MovieSessionDaoImpl implements MovieSessionDao {
                 transaction.rollback();
             }
             throw new DataProcessingException("Can't insert Movie Session entity", e);
-
+        } finally {
+            if (session != null) {
+                session.close();
+            }
         }
     }
 }
