@@ -1,12 +1,16 @@
 package com.project.cinema;
 
+import com.project.cinema.exceptions.AuthenticationException;
 import com.project.cinema.lib.Injector;
 import com.project.cinema.model.CinemaHall;
 import com.project.cinema.model.Movie;
 import com.project.cinema.model.MovieSession;
+import com.project.cinema.model.User;
+import com.project.cinema.security.AuthenticationService;
 import com.project.cinema.service.CinemaHallService;
 import com.project.cinema.service.MovieService;
 import com.project.cinema.service.MovieSessionService;
+import com.project.cinema.service.UserService;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -14,7 +18,7 @@ import java.time.LocalTime;
 public class Main {
     private static final Injector INJECTOR = Injector.getInstance("com.project.cinema");
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws AuthenticationException {
         Movie movie = new Movie();
         movie.setTitle("Fast and Furious");
         MovieService movieService = (MovieService) INJECTOR.getInstance(MovieService.class);
@@ -39,5 +43,18 @@ public class Main {
         movieSessionService.findAvailableSessions(movie.getId(),
                 LocalDate.now()).forEach(System.out::println);
 
+        User user = new User();
+        user.setEmail("test_email@gmail.com");
+        user.setPassword("1234");
+        AuthenticationService authenticationService =
+                (AuthenticationService) INJECTOR.getInstance(AuthenticationService.class);
+        user = authenticationService.register(user.getEmail(), user.getPassword());
+
+        UserService userService = (UserService) INJECTOR.getInstance(UserService.class);
+        System.out.println("Check the findByEmail method: "
+                + userService.findByEmail(user.getEmail()));
+
+        System.out.println("Check the login method: "
+                + authenticationService.login("test_email@gmail.com", "1234"));
     }
 }
