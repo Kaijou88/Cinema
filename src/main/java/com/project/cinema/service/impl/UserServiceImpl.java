@@ -5,7 +5,6 @@ import com.project.cinema.lib.Inject;
 import com.project.cinema.lib.Service;
 import com.project.cinema.model.User;
 import com.project.cinema.service.UserService;
-import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -18,7 +17,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> findByEmail(String email) {
-        return userDao.findByEmail(email);
+    public User findByEmail(String email) {
+        return userDao.findByEmail(email).orElse(null);
     }
 }
