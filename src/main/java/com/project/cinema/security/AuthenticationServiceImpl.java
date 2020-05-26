@@ -18,7 +18,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .orElseThrow(() -> new AuthenticationException("Incorrect email or password"));
 
         String hashedPassword = HashUtil.hashPassword(password, userFromDB.getSalt());
-        if (userFromDB.getPassword().equals(hashedPassword)) {
+        if (userFromDB != null && userFromDB.getPassword().equals(hashedPassword)) {
             return userFromDB;
         }
         throw new AuthenticationException("Incorrect email or password");
