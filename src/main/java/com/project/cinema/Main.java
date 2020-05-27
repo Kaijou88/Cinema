@@ -10,6 +10,7 @@ import com.project.cinema.security.AuthenticationService;
 import com.project.cinema.service.CinemaHallService;
 import com.project.cinema.service.MovieService;
 import com.project.cinema.service.MovieSessionService;
+import com.project.cinema.service.ShoppingCartService;
 import com.project.cinema.service.UserService;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -49,12 +50,20 @@ public class Main {
         AuthenticationService authenticationService =
                 (AuthenticationService) INJECTOR.getInstance(AuthenticationService.class);
         user = authenticationService.register(user.getEmail(), user.getPassword());
-
         UserService userService = (UserService) INJECTOR.getInstance(UserService.class);
         System.out.println("Check the findByEmail method: "
                 + userService.findByEmail(user.getEmail()));
-
         System.out.println("Check the login method: "
                 + authenticationService.login("test_email@gmail.com", "1234"));
+
+        ShoppingCartService shoppingCartService =
+                (ShoppingCartService) INJECTOR.getInstance(ShoppingCartService.class);
+        shoppingCartService.registerNewShoppingCart(user);
+        System.out.println("Check the findByUser method after registered shopping cart: "
+                + shoppingCartService.getByUser(user));
+        shoppingCartService.addSession(movieSession, user);
+        System.out.println("Check the findByUser method after added movie session: "
+                + shoppingCartService.getByUser(user));
+
     }
 }
