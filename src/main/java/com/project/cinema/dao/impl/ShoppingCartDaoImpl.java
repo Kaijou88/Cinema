@@ -8,6 +8,7 @@ import com.project.cinema.model.User;
 import com.project.cinema.util.HibernateUtil;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import org.hibernate.Session;
@@ -44,6 +45,7 @@ public class ShoppingCartDaoImpl implements ShoppingCartDao {
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
             CriteriaQuery<ShoppingCart> query = criteriaBuilder.createQuery(ShoppingCart.class);
             Root<ShoppingCart> root = query.from(ShoppingCart.class);
+            root.fetch("tickets", JoinType.LEFT);
             Predicate predicate = criteriaBuilder.equal(root.get("user"), user);
             CriteriaQuery<ShoppingCart> criteriaQuery = query.where(predicate);
             return session.createQuery(criteriaQuery).uniqueResult();
@@ -66,6 +68,27 @@ public class ShoppingCartDaoImpl implements ShoppingCartDao {
                 transaction.rollback();
             }
             throw new DataProcessingException("Can't update Shopping Cart entity", e);
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+
+    @Override
+    public void delete(ShoppingCart shoppingCart) {
+        Transaction transaction = null;
+        Session session = null;
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
+            transaction = session.beginTransaction();
+            session.delete(shoppingCart);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw new DataProcessingException("Can't delete Shopping Cart entity", e);
         } finally {
             if (session != null) {
                 session.close();

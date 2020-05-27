@@ -10,6 +10,7 @@ import com.project.cinema.security.AuthenticationService;
 import com.project.cinema.service.CinemaHallService;
 import com.project.cinema.service.MovieService;
 import com.project.cinema.service.MovieSessionService;
+import com.project.cinema.service.OrderService;
 import com.project.cinema.service.ShoppingCartService;
 import com.project.cinema.service.UserService;
 import java.time.LocalDate;
@@ -65,5 +66,11 @@ public class Main {
         System.out.println("Check the findByUser method after added movie session: "
                 + shoppingCartService.getByUser(user));
 
+        OrderService orderService = (OrderService) INJECTOR.getInstance(OrderService.class);
+        orderService.completeOrder(shoppingCartService.getByUser(user).getTickets(), user);
+        shoppingCartService.clear(shoppingCartService.getByUser(user));
+        System.out.println("Check the findByUser method after clear shopping cart: "
+                + shoppingCartService.getByUser(user));
+        System.out.println("Check the complete order: " + orderService.getOrderHistory(user));
     }
 }

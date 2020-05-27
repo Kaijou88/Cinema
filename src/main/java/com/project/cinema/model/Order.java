@@ -1,23 +1,25 @@
 package com.project.cinema.model;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "shopping_cart")
-public class ShoppingCart {
+@Table(name = "orders")
+public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @OneToMany
     private List<Ticket> tickets;
-    @OneToOne
+    private LocalDateTime orderTime;
+    @ManyToOne
     private User user;
 
     public Long getId() {
@@ -36,6 +38,14 @@ public class ShoppingCart {
         this.tickets = tickets;
     }
 
+    public LocalDateTime getOrderTime() {
+        return orderTime;
+    }
+
+    public void setOrderTime(LocalDateTime orderTime) {
+        this.orderTime = orderTime;
+    }
+
     public User getUser() {
         return user;
     }
@@ -46,9 +56,10 @@ public class ShoppingCart {
 
     @Override
     public String toString() {
-        return "ShoppingCart{"
+        return "Order{"
                 + "id=" + id
                 + ", tickets=" + tickets
+                + ", orderTime=" + orderTime
                 + ", user=" + user
                 + '}';
     }
