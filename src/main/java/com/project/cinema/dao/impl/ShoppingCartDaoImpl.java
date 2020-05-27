@@ -19,7 +19,9 @@ public class ShoppingCartDaoImpl implements ShoppingCartDao {
     @Override
     public ShoppingCart add(ShoppingCart shoppingCart) {
         Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        Session session = null;
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
             transaction = session.beginTransaction();
             session.save(shoppingCart);
             transaction.commit();
@@ -29,6 +31,10 @@ public class ShoppingCartDaoImpl implements ShoppingCartDao {
                 transaction.rollback();
             }
             throw new DataProcessingException("Can't insert Shopping Cart entity", e);
+        } finally {
+            if (session != null) {
+                session.close();
+            }
         }
     }
 
@@ -38,7 +44,7 @@ public class ShoppingCartDaoImpl implements ShoppingCartDao {
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
             CriteriaQuery<ShoppingCart> query = criteriaBuilder.createQuery(ShoppingCart.class);
             Root<ShoppingCart> root = query.from(ShoppingCart.class);
-            Predicate predicate = criteriaBuilder.equal(root.get("user"), user.getId());
+            Predicate predicate = criteriaBuilder.equal(root.get("user"), user);
             CriteriaQuery<ShoppingCart> criteriaQuery = query.where(predicate);
             return session.createQuery(criteriaQuery).uniqueResult();
         } catch (Exception e) {
@@ -49,7 +55,9 @@ public class ShoppingCartDaoImpl implements ShoppingCartDao {
     @Override
     public void update(ShoppingCart shoppingCart) {
         Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        Session session = null;
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
             transaction = session.beginTransaction();
             session.update(shoppingCart);
             transaction.commit();
@@ -58,6 +66,10 @@ public class ShoppingCartDaoImpl implements ShoppingCartDao {
                 transaction.rollback();
             }
             throw new DataProcessingException("Can't update Shopping Cart entity", e);
+        } finally {
+            if (session != null) {
+                session.close();
+            }
         }
     }
 }
