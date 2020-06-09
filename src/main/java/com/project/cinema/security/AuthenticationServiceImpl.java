@@ -1,16 +1,18 @@
 package com.project.cinema.security;
 
 import com.project.cinema.exceptions.AuthenticationException;
-import com.project.cinema.lib.Inject;
-import com.project.cinema.lib.Service;
 import com.project.cinema.model.User;
 import com.project.cinema.service.UserService;
 import com.project.cinema.util.HashUtil;
+import org.springframework.stereotype.Service;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
-    @Inject
-    private UserService userService;
+    private final UserService userService;
+
+    public AuthenticationServiceImpl(UserService userService) {
+        this.userService = userService;
+    }
 
     @Override
     public User login(String email, String password) throws AuthenticationException {

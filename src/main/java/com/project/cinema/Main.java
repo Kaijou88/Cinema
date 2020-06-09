@@ -1,7 +1,7 @@
 package com.project.cinema;
 
+import com.project.cinema.config.AppConfig;
 import com.project.cinema.exceptions.AuthenticationException;
-import com.project.cinema.lib.Injector;
 import com.project.cinema.model.CinemaHall;
 import com.project.cinema.model.Movie;
 import com.project.cinema.model.MovieSession;
@@ -16,21 +16,23 @@ import com.project.cinema.service.UserService;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public class Main {
-    private static final Injector INJECTOR = Injector.getInstance("com.project.cinema");
-
     public static void main(String[] args) throws AuthenticationException {
+        AnnotationConfigApplicationContext context =
+                new AnnotationConfigApplicationContext(AppConfig.class);
+
         Movie movie = new Movie();
         movie.setTitle("Fast and Furious");
-        MovieService movieService = (MovieService) INJECTOR.getInstance(MovieService.class);
+        MovieService movieService = context.getBean(MovieService.class);
         movie = movieService.add(movie);
         movieService.getAll().forEach(System.out::println);
 
         CinemaHall cinemaHall = new CinemaHall();
         cinemaHall.setCapacity(250);
         CinemaHallService cinemaHallService =
-                (CinemaHallService) INJECTOR.getInstance(CinemaHallService.class);
+                context.getBean(CinemaHallService.class);
         cinemaHall = cinemaHallService.add(cinemaHall);
         cinemaHallService.getAll().forEach(System.out::println);
 
@@ -39,8 +41,7 @@ public class Main {
         movieSession.setMovie(movie);
         movieSession.setShowTime(LocalDateTime.of(LocalDate.now(),
                 LocalTime.of(16, 30)));
-        MovieSessionService movieSessionService =
-                (MovieSessionService) INJECTOR.getInstance(MovieSessionService.class);
+        MovieSessionService movieSessionService = context.getBean(MovieSessionService.class);
         movieSessionService.add(movieSession);
         movieSessionService.findAvailableSessions(movie.getId(),
                 LocalDate.now()).forEach(System.out::println);
@@ -48,17 +49,16 @@ public class Main {
         User user = new User();
         user.setEmail("test_email@gmail.com");
         user.setPassword("1234");
-        AuthenticationService authenticationService =
-                (AuthenticationService) INJECTOR.getInstance(AuthenticationService.class);
+        AuthenticationService authenticationService = context.getBean(AuthenticationService.class);
         user = authenticationService.register(user.getEmail(), user.getPassword());
-        UserService userService = (UserService) INJECTOR.getInstance(UserService.class);
+        UserService userService = context.getBean(UserService.class);
         System.out.println("Check the findByEmail method: "
                 + userService.findByEmail(user.getEmail()));
         System.out.println("Check the login method: "
                 + authenticationService.login("test_email@gmail.com", "1234"));
 
         ShoppingCartService shoppingCartService =
-                (ShoppingCartService) INJECTOR.getInstance(ShoppingCartService.class);
+                context.getBean(ShoppingCartService.class);
         shoppingCartService.registerNewShoppingCart(user);
         System.out.println("Check the findByUser method after registered shopping cart: "
                 + shoppingCartService.getByUser(user));
@@ -66,7 +66,7 @@ public class Main {
         System.out.println("Check the findByUser method after added movie session: "
                 + shoppingCartService.getByUser(user));
 
-        OrderService orderService = (OrderService) INJECTOR.getInstance(OrderService.class);
+        OrderService orderService = context.getBean(OrderService.class);
         orderService.completeOrder(shoppingCartService.getByUser(user).getTickets(), user);
         shoppingCartService.clear(shoppingCartService.getByUser(user));
         System.out.println("Check the findByUser method after clear shopping cart: "
