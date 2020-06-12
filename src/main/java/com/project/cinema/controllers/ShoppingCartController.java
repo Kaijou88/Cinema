@@ -27,7 +27,7 @@ public class ShoppingCartController {
     @Autowired
     private ShoppingCartMapper shoppingCartMapper;
 
-    @PostMapping("/addmoviesession")
+    @PostMapping("/add-movie-session")
     public String addMovieSessionToShoppingCart(@RequestBody ShoppingCartRequestDto
                                                             shoppingCartRequestDto, Long userId) {
         shoppingCartService.addSession(movieSessionService
