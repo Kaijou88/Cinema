@@ -25,7 +25,7 @@ public class CinemaHallController {
     @Autowired
     private CinemaHallMapper cinemaHallMapper;
 
-    @PostMapping("/add")
+    @PostMapping
     public String addCinemaHall(@RequestBody CinemaHallRequestDto cinemaHallRequestDto) {
         CinemaHall cinemaHall = cinemaHallMapper.createCinemaHall(cinemaHallRequestDto);
         cinemaHallService.add(cinemaHall);
