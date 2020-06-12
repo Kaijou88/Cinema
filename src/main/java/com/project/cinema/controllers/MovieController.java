@@ -32,7 +32,7 @@ public class MovieController {
         return "Movie was added";
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public List<MovieResponseDto> getAllMovies() {
         return movieService.getAll().stream()
                 .map(movieMapper::getMovieDto)
