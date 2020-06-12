@@ -32,7 +32,7 @@ public class CinemaHallController {
         return "Cinema Hall was added";
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public List<CinemaHallResponseDto> getAllCinemaHalls() {
         return cinemaHallService.getAll().stream()
                 .map(cinemaHallMapper::getCinemaHallDto)
