@@ -51,7 +51,21 @@ public class UserDaoImpl implements UserDao {
             CriteriaQuery<User> criteriaQuery = query.where(predicate);
             return session.createQuery(criteriaQuery).uniqueResultOptional();
         } catch (Exception e) {
-            throw new DataProcessingException("Can't find any available sessions", e);
+            throw new DataProcessingException("Can't find any user", e);
+        }
+    }
+
+    @Override
+    public User findById(Long userId) {
+        try (Session session = sessionFactory.openSession()) {
+            CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
+            Root<User> root = query.from(User.class);
+            Predicate predicate = criteriaBuilder.equal(root.get("id"), userId);
+            CriteriaQuery<User> criteriaQuery = query.where(predicate);
+            return session.createQuery(criteriaQuery).uniqueResult();
+        } catch (Exception e) {
+            throw new DataProcessingException("Can't find any user", e);
         }
     }
 }
