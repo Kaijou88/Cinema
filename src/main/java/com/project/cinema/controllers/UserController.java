@@ -23,7 +23,7 @@ public class UserController {
     @Autowired
     private UserMapper userMapper;
 
-    @GetMapping("/byemail/{email}/")
+    @GetMapping("/by-email/{email}/")
     public UserResponseDto getUserByEmail(@PathVariable String email) {
         return userMapper.getUserDto(userService.findByEmail(email));
     }

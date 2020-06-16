@@ -11,6 +11,7 @@ import com.project.cinema.service.MovieSessionService;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/moviesessions")
+@RequestMapping("/movie-sessions")
 public class MovieSessionController {
     private AnnotationConfigApplicationContext context =
             new AnnotationConfigApplicationContext(AppConfig.class);
@@ -32,7 +33,8 @@ public class MovieSessionController {
     private MovieSessionMapper movieSessionMapper;
 
     @PostMapping
-    public String addMovieSession(@RequestBody MovieSessionRequestDto movieSessionRequestDto) {
+    public String addMovieSession(@RequestBody @Valid MovieSessionRequestDto
+                                              movieSessionRequestDto) {
         MovieSession movieSession = new MovieSession();
         movieSession.setMovie(movieService.getAll().stream()
                 .filter(m -> m.getId().equals(movieSessionRequestDto.getMovieId()))

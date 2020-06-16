@@ -8,6 +8,7 @@ import com.project.cinema.model.dto.mapper.CinemaHallMapper;
 import com.project.cinema.service.CinemaHallService;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/cinemahalls")
+@RequestMapping("/cinema-halls")
 public class CinemaHallController {
     private AnnotationConfigApplicationContext context =
             new AnnotationConfigApplicationContext(AppConfig.class);
@@ -26,7 +27,7 @@ public class CinemaHallController {
     private CinemaHallMapper cinemaHallMapper;
 
     @PostMapping
-    public String addCinemaHall(@RequestBody CinemaHallRequestDto cinemaHallRequestDto) {
+    public String addCinemaHall(@RequestBody @Valid CinemaHallRequestDto cinemaHallRequestDto) {
         CinemaHall cinemaHall = cinemaHallMapper.createCinemaHall(cinemaHallRequestDto);
         cinemaHallService.add(cinemaHall);
         return "Cinema Hall was added";

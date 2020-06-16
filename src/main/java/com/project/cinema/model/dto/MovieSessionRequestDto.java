@@ -2,11 +2,15 @@ package com.project.cinema.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
+import javax.validation.constraints.NotNull;
 
 public class MovieSessionRequestDto {
+    @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime movieSessionShowTime;
+    @NotNull
     private Long movieId;
+    @NotNull
     private Long cinemaHallId;
 
     public LocalDateTime getMovieSessionShowTime() {

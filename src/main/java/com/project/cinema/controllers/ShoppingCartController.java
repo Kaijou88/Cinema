@@ -8,8 +8,10 @@ import com.project.cinema.model.dto.mapper.ShoppingCartMapper;
 import com.project.cinema.service.MovieSessionService;
 import com.project.cinema.service.ShoppingCartService;
 import com.project.cinema.service.UserService;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/shoppingcarts")
+@RequestMapping("/shopping-carts")
 public class ShoppingCartController {
     private AnnotationConfigApplicationContext context =
             new AnnotationConfigApplicationContext(AppConfig.class);
@@ -28,17 +30,20 @@ public class ShoppingCartController {
     private ShoppingCartMapper shoppingCartMapper;
 
     @PostMapping("/add-movie-session")
-    public String addMovieSessionToShoppingCart(@RequestBody ShoppingCartRequestDto
-                                                            shoppingCartRequestDto, Long userId) {
+    public String addMovieSessionToShoppingCart(@RequestBody @Valid ShoppingCartRequestDto
+                                                            shoppingCartRequestDto,
+                                                            Authentication authentication) {
+        String email = authentication.getName();
         shoppingCartService.addSession(movieSessionService
                 .findById(shoppingCartRequestDto.getMovieSessionId()),
-                userService.findById(userId));
+                userService.findByEmail(email));
         return "Movie session was added to shopping cart";
     }
 
-    @GetMapping("/byuser")
-    public ShoppingCartResponseDto getShoppingCartByUser(Long userId) {
-        ShoppingCart shoppingCart = shoppingCartService.getByUser(userService.findById(userId));
+    @GetMapping("/by-user")
+    public ShoppingCartResponseDto getShoppingCartByUser(Authentication authentication) {
+        String email = authentication.getName();
+        ShoppingCart shoppingCart = shoppingCartService.getByUser(userService.findByEmail(email));
         return shoppingCartMapper.getShoppingCartDto(shoppingCart);
     }
 }
