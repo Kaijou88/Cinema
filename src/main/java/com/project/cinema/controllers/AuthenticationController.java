@@ -6,6 +6,7 @@ import com.project.cinema.model.dto.UserRequestDto;
 import com.project.cinema.model.dto.mapper.UserMapper;
 import com.project.cinema.security.AuthenticationService;
 import com.project.cinema.service.ShoppingCartService;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +24,7 @@ public class AuthenticationController {
     private UserMapper userMapper;
 
     @PostMapping("/register")
-    public String registration(@RequestBody UserRequestDto userRequestDto) {
+    public String registration(@RequestBody @Valid UserRequestDto userRequestDto) {
         User user = userMapper.createUser(userRequestDto);
         User registeredUser = authenticationService.register(user.getEmail(), user.getPassword());
         shoppingCartService.registerNewShoppingCart(registeredUser);
