@@ -14,6 +14,4 @@ public @interface PasswordConstraint {
     String message() default "Passwords don't match!";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
-    String field();
-    String fieldMatch();
 }

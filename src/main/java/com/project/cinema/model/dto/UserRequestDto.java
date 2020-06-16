@@ -3,10 +3,7 @@ package com.project.cinema.model.dto;
 import com.project.cinema.annotations.EmailConstraint;
 import com.project.cinema.annotations.PasswordConstraint;
 
-@PasswordConstraint(
-        field = "userPassword",
-        fieldMatch = "repeatUserPassword"
-)
+@PasswordConstraint
 public class UserRequestDto {
     @EmailConstraint
     private String userEmail;
