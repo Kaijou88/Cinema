@@ -30,9 +30,7 @@ public class RoleDaoImpl implements RoleDao {
             session = sessionFactory.openSession();
             transaction = session.beginTransaction();
             session.save(role);
-            System.out.println("saved");
             transaction.commit();
-            System.out.println("commit");
             return role;
         } catch (Exception e) {
             if (transaction != null) {
@@ -41,7 +39,6 @@ public class RoleDaoImpl implements RoleDao {
             throw new DataProcessingException("Can't insert Role", e);
         } finally {
             if (session != null) {
-                System.out.println("close session");
                 session.close();
             }
         }

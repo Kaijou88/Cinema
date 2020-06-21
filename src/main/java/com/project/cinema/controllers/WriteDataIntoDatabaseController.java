@@ -30,7 +30,6 @@ public class WriteDataIntoDatabaseController {
     public void init() {
         injectRolesToDB();
         injectUsersToDB();
-        System.out.println("init ended");
     }
 
     private void injectRolesToDB() {
