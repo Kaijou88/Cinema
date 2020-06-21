@@ -6,7 +6,7 @@ import javax.validation.constraints.NotNull;
 public class CinemaHallRequestDto {
     @Min(10)
     private int cinemaHallCapacity;
-    @NotNull
+    @NotNull(message = "Cinema Hall description should not be null")
     private String cinemaHallDescription;
 
     public int getCinemaHallCapacity() {

@@ -3,13 +3,14 @@ package com.project.cinema.config;
 import java.util.Properties;
 import javax.sql.DataSource;
 import org.apache.commons.dbcp2.BasicDataSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @PropertySource("classpath:db.properties")
@@ -17,12 +18,14 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
         "com.project.cinema.service",
         "com.project.cinema.dao",
         "com.project.cinema.security",
-        "com.project.cinema.util",
         "com.project.cinema.model.dto.mapper"
 })
 public class AppConfig {
-    @Autowired
-    private Environment env;
+    private final Environment env;
+
+    public AppConfig(Environment env) {
+        this.env = env;
+    }
 
     @Bean
     public DataSource getDataSource() {
@@ -44,5 +47,10 @@ public class AppConfig {
         factoryBean.setHibernateProperties(props);
         factoryBean.setPackagesToScan("com.project.cinema.model");
         return factoryBean;
+    }
+
+    @Bean
+    public PasswordEncoder getEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

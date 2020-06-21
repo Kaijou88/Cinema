@@ -1,13 +1,10 @@
 package com.project.cinema.dao.impl;
 
-import com.project.cinema.dao.OrderDao;
+import com.project.cinema.dao.RoleDao;
 import com.project.cinema.exceptions.DataProcessingException;
-import com.project.cinema.model.Order;
-import com.project.cinema.model.User;
-import java.util.List;
+import com.project.cinema.model.Role;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import org.hibernate.Session;
@@ -17,48 +14,51 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class OrderDaoImpl implements OrderDao {
+public class RoleDaoImpl implements RoleDao {
     private final SessionFactory sessionFactory;
 
     @Autowired
-    public OrderDaoImpl(SessionFactory sessionFactory) {
+    public RoleDaoImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
     @Override
-    public Order add(Order order) {
+    public Role add(Role role) {
         Transaction transaction = null;
         Session session = null;
         try {
             session = sessionFactory.openSession();
             transaction = session.beginTransaction();
-            session.save(order);
+            session.save(role);
+            System.out.println("saved");
             transaction.commit();
-            return order;
+            System.out.println("commit");
+            return role;
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
             }
-            throw new DataProcessingException("Can't insert Order entity", e);
+            throw new DataProcessingException("Can't insert Role", e);
         } finally {
             if (session != null) {
+                System.out.println("close session");
                 session.close();
             }
         }
     }
 
     @Override
-    public List<Order> findByUser(User user) {
+    public Role getRoleByName(String roleName) {
         try (Session session = sessionFactory.openSession()) {
+            Role.RoleName name = Role.RoleName.valueOf(roleName);
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-            CriteriaQuery<Order> query = criteriaBuilder.createQuery(Order.class);
-            Root<Order> root = query.from(Order.class);
-            root.fetch("tickets", JoinType.LEFT);
-            Predicate predicate = criteriaBuilder.equal(root.get("user"), user);
-            CriteriaQuery<Order> criteriaQuery = query.where(predicate);
-            return session.createQuery(criteriaQuery).list();
+            CriteriaQuery<Role> query = criteriaBuilder.createQuery(Role.class);
+            Root<Role> root = query.from(Role.class);
+            Predicate predicate = criteriaBuilder.equal(root.get("roleName"), name);
+            CriteriaQuery<Role> criteriaQuery = query.where(predicate);
+            return session.createQuery(criteriaQuery).getSingleResult();
         } catch (Exception e) {
-            throw new DataProcessingException("Can't find any orders", e);
+            throw new DataProcessingException("Can't find any role", e);
         }
     }
 }

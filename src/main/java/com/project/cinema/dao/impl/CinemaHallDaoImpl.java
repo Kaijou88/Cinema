@@ -13,8 +13,12 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class CinemaHallDaoImpl implements CinemaHallDao {
+    private final SessionFactory sessionFactory;
+
     @Autowired
-    private SessionFactory sessionFactory;
+    public CinemaHallDaoImpl(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     @Override
     public CinemaHall add(CinemaHall cinemaHall) {

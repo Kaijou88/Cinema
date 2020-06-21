@@ -4,7 +4,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 public class MovieRequestDto {
-    @NotNull
+    @NotNull(message = "Movie title should not be null")
     @Size(min = 3)
     private String movieTitle;
     private String movieDescription;
