@@ -1,27 +1,28 @@
 package com.project.cinema.controllers;
 
-import com.project.cinema.config.AppConfig;
 import com.project.cinema.model.User;
 import com.project.cinema.model.dto.UserRequestDto;
 import com.project.cinema.model.dto.mapper.UserMapper;
 import com.project.cinema.security.AuthenticationService;
 import com.project.cinema.service.ShoppingCartService;
 import javax.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class AuthenticationController {
-    private AnnotationConfigApplicationContext context =
-            new AnnotationConfigApplicationContext(AppConfig.class);
-    private AuthenticationService authenticationService =
-            context.getBean(AuthenticationService.class);
-    private ShoppingCartService shoppingCartService = context.getBean(ShoppingCartService.class);
-    @Autowired
-    private UserMapper userMapper;
+    private final AuthenticationService authenticationService;
+    private final ShoppingCartService shoppingCartService;
+    private final UserMapper userMapper;
+
+    public AuthenticationController(AuthenticationService authenticationService,
+                                    ShoppingCartService shoppingCartService,
+                                    UserMapper userMapper) {
+        this.authenticationService = authenticationService;
+        this.shoppingCartService = shoppingCartService;
+        this.userMapper = userMapper;
+    }
 
     @PostMapping("/register")
     public String registration(@RequestBody @Valid UserRequestDto userRequestDto) {

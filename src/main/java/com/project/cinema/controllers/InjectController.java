@@ -10,16 +10,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class WriteDataIntoDatabaseController {
+public class InjectController {
     private final RoleService roleService;
     private final ShoppingCartService shoppingCartService;
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
 
-    public WriteDataIntoDatabaseController(RoleService roleService,
-                                           ShoppingCartService shoppingCartService,
-                                           UserService userService,
-                                           PasswordEncoder passwordEncoder) {
+    public InjectController(RoleService roleService,
+                            ShoppingCartService shoppingCartService,
+                            UserService userService,
+                            PasswordEncoder passwordEncoder) {
         this.roleService = roleService;
         this.shoppingCartService = shoppingCartService;
         this.userService = userService;
@@ -27,7 +27,7 @@ public class WriteDataIntoDatabaseController {
     }
 
     @PostConstruct
-    public void init() {
+    public void injectData() {
         injectRolesToDB();
         injectUsersToDB();
     }

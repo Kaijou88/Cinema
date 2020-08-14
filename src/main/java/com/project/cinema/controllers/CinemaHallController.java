@@ -1,6 +1,5 @@
 package com.project.cinema.controllers;
 
-import com.project.cinema.config.AppConfig;
 import com.project.cinema.model.CinemaHall;
 import com.project.cinema.model.dto.CinemaHallRequestDto;
 import com.project.cinema.model.dto.CinemaHallResponseDto;
@@ -9,8 +8,6 @@ import com.project.cinema.service.CinemaHallService;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,11 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/cinema-halls")
 public class CinemaHallController {
-    private AnnotationConfigApplicationContext context =
-            new AnnotationConfigApplicationContext(AppConfig.class);
-    private CinemaHallService cinemaHallService = context.getBean(CinemaHallService.class);
-    @Autowired
-    private CinemaHallMapper cinemaHallMapper;
+    private final CinemaHallService cinemaHallService;
+    private final CinemaHallMapper cinemaHallMapper;
+
+    public CinemaHallController(CinemaHallService cinemaHallService,
+                                CinemaHallMapper cinemaHallMapper) {
+        this.cinemaHallService = cinemaHallService;
+        this.cinemaHallMapper = cinemaHallMapper;
+    }
 
     @PostMapping
     public String addCinemaHall(@RequestBody @Valid CinemaHallRequestDto cinemaHallRequestDto) {

@@ -1,6 +1,5 @@
 package com.project.cinema.controllers;
 
-import com.project.cinema.config.AppConfig;
 import com.project.cinema.model.MovieSession;
 import com.project.cinema.model.dto.MovieSessionRequestDto;
 import com.project.cinema.model.dto.MovieSessionResponseDto;
@@ -12,8 +11,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,13 +21,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/movie-sessions")
 public class MovieSessionController {
-    private AnnotationConfigApplicationContext context =
-            new AnnotationConfigApplicationContext(AppConfig.class);
-    private MovieService movieService = context.getBean(MovieService.class);
-    private CinemaHallService cinemaHallService = context.getBean(CinemaHallService.class);
-    private MovieSessionService movieSessionService = context.getBean(MovieSessionService.class);
-    @Autowired
-    private MovieSessionMapper movieSessionMapper;
+    private final MovieService movieService;
+    private final CinemaHallService cinemaHallService;
+    private final MovieSessionService movieSessionService;
+    private final MovieSessionMapper movieSessionMapper;
+
+    public MovieSessionController(MovieService movieService, CinemaHallService cinemaHallService,
+                                  MovieSessionService movieSessionService,
+                                  MovieSessionMapper movieSessionMapper) {
+        this.movieService = movieService;
+        this.cinemaHallService = cinemaHallService;
+        this.movieSessionService = movieSessionService;
+        this.movieSessionMapper = movieSessionMapper;
+    }
 
     @PostMapping
     public String addMovieSession(@RequestBody @Valid MovieSessionRequestDto

@@ -1,6 +1,5 @@
 package com.project.cinema.security;
 
-import com.project.cinema.exceptions.AuthenticationException;
 import com.project.cinema.model.Role;
 import com.project.cinema.model.User;
 import com.project.cinema.service.RoleService;
@@ -20,15 +19,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
         this.roleService = roleService;
-    }
-
-    @Override
-    public User login(String email, String password) throws AuthenticationException {
-        User userFromDB = userService.findByEmail(email);
-        if (userFromDB != null && passwordEncoder.matches(password, userFromDB.getPassword())) {
-            return userFromDB;
-        }
-        throw new AuthenticationException("Incorrect email or password");
     }
 
     @Override
