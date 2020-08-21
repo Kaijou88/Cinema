@@ -5,12 +5,12 @@ import java.time.LocalDateTime;
 import javax.validation.constraints.NotNull;
 
 public class MovieSessionRequestDto {
-    @NotNull
+    @NotNull(message = "Show time should not be null")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime movieSessionShowTime;
-    @NotNull
+    @NotNull(message = "Movie id should not be null")
     private Long movieId;
-    @NotNull
+    @NotNull(message = "Cinema Hall id should not be null")
     private Long cinemaHallId;
 
     public LocalDateTime getMovieSessionShowTime() {

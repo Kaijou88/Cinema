@@ -1,11 +1,11 @@
 package com.project.cinema.model;
 
-import java.util.Arrays;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class User {
@@ -15,7 +15,8 @@ public class User {
     @Column(unique = true)
     private String email;
     private String password;
-    private byte[] salt;
+    @ManyToOne
+    private Role role;
 
     public Long getId() {
         return id;
@@ -41,12 +42,12 @@ public class User {
         this.password = password;
     }
 
-    public byte[] getSalt() {
-        return salt;
+    public Role getRole() {
+        return role;
     }
 
-    public void setSalt(byte[] salt) {
-        this.salt = salt;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     @Override
@@ -54,8 +55,8 @@ public class User {
         return "User{"
                 + "id=" + id
                 + ", email='" + email + '\''
-                + ", password='" + password + '\''
-                + ", salt=" + Arrays.toString(salt)
+                + ", role='" + role + '\''
+                + ", password='" + password
                 + '}';
     }
 }

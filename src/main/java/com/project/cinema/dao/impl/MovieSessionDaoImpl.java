@@ -11,14 +11,18 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class MovieSessionDaoImpl implements MovieSessionDao {
+public class MovieSessionDaoImpl extends GenericDaoImpl<MovieSession> implements MovieSessionDao {
+    private final SessionFactory sessionFactory;
+
     @Autowired
-    private SessionFactory sessionFactory;
+    public MovieSessionDaoImpl(SessionFactory sessionFactory) {
+        super(sessionFactory);
+        this.sessionFactory = sessionFactory;
+    }
 
     @Override
     public List<MovieSession> findAvailableSessions(Long movieId, LocalDate date) {
@@ -40,37 +44,11 @@ public class MovieSessionDaoImpl implements MovieSessionDao {
 
     @Override
     public MovieSession add(MovieSession movieSession) {
-        Transaction transaction = null;
-        Session session = null;
-        try {
-            session = sessionFactory.openSession();
-            transaction = session.beginTransaction();
-            session.save(movieSession);
-            transaction.commit();
-            return movieSession;
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw new DataProcessingException("Can't insert Movie Session entity", e);
-        } finally {
-            if (session != null) {
-                session.close();
-            }
-        }
+        return super.add(movieSession);
     }
 
     @Override
     public MovieSession findById(Long movieSessionId) {
-        try (Session session = sessionFactory.openSession()) {
-            CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-            CriteriaQuery<MovieSession> query = criteriaBuilder.createQuery(MovieSession.class);
-            Root<MovieSession> root = query.from(MovieSession.class);
-            Predicate predicate = criteriaBuilder.equal(root.get("id"), movieSessionId);
-            CriteriaQuery<MovieSession> criteriaQuery = query.where(predicate);
-            return session.createQuery(criteriaQuery).uniqueResult();
-        } catch (Exception e) {
-            throw new DataProcessingException("Can't find any movie session", e);
-        }
+        return super.findById(movieSessionId, MovieSession.class);
     }
 }

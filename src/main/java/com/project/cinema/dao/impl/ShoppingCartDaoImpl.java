@@ -16,30 +16,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class ShoppingCartDaoImpl implements ShoppingCartDao {
+public class ShoppingCartDaoImpl extends GenericDaoImpl<ShoppingCart> implements ShoppingCartDao {
+    private final SessionFactory sessionFactory;
+
     @Autowired
-    private SessionFactory sessionFactory;
+    public ShoppingCartDaoImpl(SessionFactory sessionFactory) {
+        super(sessionFactory);
+        this.sessionFactory = sessionFactory;
+    }
 
     @Override
     public ShoppingCart add(ShoppingCart shoppingCart) {
-        Transaction transaction = null;
-        Session session = null;
-        try {
-            session = sessionFactory.openSession();
-            transaction = session.beginTransaction();
-            session.save(shoppingCart);
-            transaction.commit();
-            return shoppingCart;
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw new DataProcessingException("Can't insert Shopping Cart entity", e);
-        } finally {
-            if (session != null) {
-                session.close();
-            }
-        }
+        return super.add(shoppingCart);
+    }
+
+    @Override
+    public ShoppingCart findById(Long id) {
+        return super.findById(id, ShoppingCart.class);
     }
 
     @Override

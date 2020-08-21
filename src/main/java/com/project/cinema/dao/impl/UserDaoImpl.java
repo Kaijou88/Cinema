@@ -10,35 +10,22 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class UserDaoImpl implements UserDao {
+public class UserDaoImpl extends GenericDaoImpl<User> implements UserDao {
+    private final SessionFactory sessionFactory;
+
     @Autowired
-    private SessionFactory sessionFactory;
+    public UserDaoImpl(SessionFactory sessionFactory) {
+        super(sessionFactory);
+        this.sessionFactory = sessionFactory;
+    }
 
     @Override
     public User add(User user) {
-        Transaction transaction = null;
-        Session session = null;
-        try {
-            session = sessionFactory.openSession();
-            transaction = session.beginTransaction();
-            session.save(user);
-            transaction.commit();
-            return user;
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw new DataProcessingException("Can't insert User entity", e);
-        } finally {
-            if (session != null) {
-                session.close();
-            }
-        }
+        return super.add(user);
     }
 
     @Override
@@ -57,15 +44,6 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User findById(Long userId) {
-        try (Session session = sessionFactory.openSession()) {
-            CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-            CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
-            Root<User> root = query.from(User.class);
-            Predicate predicate = criteriaBuilder.equal(root.get("id"), userId);
-            CriteriaQuery<User> criteriaQuery = query.where(predicate);
-            return session.createQuery(criteriaQuery).uniqueResult();
-        } catch (Exception e) {
-            throw new DataProcessingException("Can't find any user", e);
-        }
+        return super.findById(userId, User.class);
     }
 }

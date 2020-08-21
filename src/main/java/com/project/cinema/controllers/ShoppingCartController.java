@@ -1,6 +1,5 @@
 package com.project.cinema.controllers;
 
-import com.project.cinema.config.AppConfig;
 import com.project.cinema.model.ShoppingCart;
 import com.project.cinema.model.dto.ShoppingCartRequestDto;
 import com.project.cinema.model.dto.ShoppingCartResponseDto;
@@ -9,8 +8,9 @@ import com.project.cinema.service.MovieSessionService;
 import com.project.cinema.service.ShoppingCartService;
 import com.project.cinema.service.UserService;
 import javax.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,13 +21,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/shopping-carts")
 public class ShoppingCartController {
-    private AnnotationConfigApplicationContext context =
-            new AnnotationConfigApplicationContext(AppConfig.class);
-    private ShoppingCartService shoppingCartService = context.getBean(ShoppingCartService.class);
-    private MovieSessionService movieSessionService = context.getBean(MovieSessionService.class);
-    private UserService userService = context.getBean(UserService.class);
-    @Autowired
-    private ShoppingCartMapper shoppingCartMapper;
+    private static final Logger LOGGER = LogManager.getLogger(ShoppingCartController.class);
+    private final ShoppingCartService shoppingCartService;
+    private final MovieSessionService movieSessionService;
+    private final UserService userService;
+    private final ShoppingCartMapper shoppingCartMapper;
+
+    public ShoppingCartController(ShoppingCartService shoppingCartService,
+                                  MovieSessionService movieSessionService,
+                                  UserService userService, ShoppingCartMapper
+                                          shoppingCartMapper) {
+        this.shoppingCartService = shoppingCartService;
+        this.movieSessionService = movieSessionService;
+        this.userService = userService;
+        this.shoppingCartMapper = shoppingCartMapper;
+    }
 
     @PostMapping("/add-movie-session")
     public String addMovieSessionToShoppingCart(@RequestBody @Valid ShoppingCartRequestDto
@@ -37,6 +45,7 @@ public class ShoppingCartController {
         shoppingCartService.addSession(movieSessionService
                 .findById(shoppingCartRequestDto.getMovieSessionId()),
                 userService.findByEmail(email));
+        LOGGER.log(Level.INFO, "Movie session was added to shopping cart");
         return "Movie session was added to shopping cart";
     }
 

@@ -5,40 +5,24 @@ import com.project.cinema.exceptions.DataProcessingException;
 import com.project.cinema.model.Movie;
 import java.util.List;
 import javax.persistence.criteria.CriteriaQuery;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class MovieDaoImpl implements MovieDao {
-    private static final Logger LOGGER = LogManager.getLogger(MovieDaoImpl.class);
+public class MovieDaoImpl extends GenericDaoImpl<Movie> implements MovieDao {
+    private final SessionFactory sessionFactory;
+
     @Autowired
-    private SessionFactory sessionFactory;
+    public MovieDaoImpl(SessionFactory sessionFactory) {
+        super(sessionFactory);
+        this.sessionFactory = sessionFactory;
+    }
 
     @Override
     public Movie add(Movie movie) {
-        Transaction transaction = null;
-        Session session = null;
-        try {
-            session = sessionFactory.openSession();
-            transaction = session.beginTransaction();
-            session.save(movie);
-            transaction.commit();
-            return movie;
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw new DataProcessingException("Can't insert Movie entity", e);
-        } finally {
-            if (session != null) {
-                session.close();
-            }
-        }
+        return super.add(movie);
     }
 
     @Override
@@ -51,5 +35,10 @@ public class MovieDaoImpl implements MovieDao {
         } catch (Exception e) {
             throw new DataProcessingException("Error retrieving all movies", e);
         }
+    }
+
+    @Override
+    public Movie findById(Long id) {
+        return super.findById(id, Movie.class);
     }
 }
