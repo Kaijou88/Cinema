@@ -11,6 +11,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/movie-sessions")
 public class MovieSessionController {
+    private static final Logger LOGGER = LogManager.getLogger(MovieSessionController.class);
     private final MovieService movieService;
     private final CinemaHallService cinemaHallService;
     private final MovieSessionService movieSessionService;
@@ -39,18 +43,12 @@ public class MovieSessionController {
     public String addMovieSession(@RequestBody @Valid MovieSessionRequestDto
                                               movieSessionRequestDto) {
         MovieSession movieSession = new MovieSession();
-        movieSession.setMovie(movieService.getAll().stream()
-                .filter(m -> m.getId().equals(movieSessionRequestDto.getMovieId()))
-                .findFirst()
-                .get()
-        );
+        movieSession.setMovie(movieService.getById(movieSessionRequestDto.getMovieId()));
         movieSession.setShowTime(movieSessionRequestDto.getMovieSessionShowTime());
-        movieSession.setCinemaHall(cinemaHallService.getAll().stream()
-                .filter(c -> c.getId().equals(movieSessionRequestDto.getCinemaHallId()))
-                .findFirst()
-                .get()
-        );
+        movieSession.setCinemaHall(
+                cinemaHallService.getById(movieSessionRequestDto.getCinemaHallId()));
         movieSessionService.add(movieSession);
+        LOGGER.log(Level.INFO, "Movie session was added");
         return "Movie session was added";
     }
 

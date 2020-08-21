@@ -6,11 +6,15 @@ import com.project.cinema.service.RoleService;
 import com.project.cinema.service.ShoppingCartService;
 import com.project.cinema.service.UserService;
 import javax.annotation.PostConstruct;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 
 @Controller
 public class InjectController {
+    private static final Logger LOGGER = LogManager.getLogger(InjectController.class);
     private final RoleService roleService;
     private final ShoppingCartService shoppingCartService;
     private final UserService userService;
@@ -30,6 +34,7 @@ public class InjectController {
     public void injectData() {
         injectRolesToDB();
         injectUsersToDB();
+        LOGGER.log(Level.INFO, "Roles and Users were added to DB.");
     }
 
     private void injectRolesToDB() {

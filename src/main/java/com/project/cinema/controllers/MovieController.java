@@ -8,6 +8,9 @@ import com.project.cinema.service.MovieService;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/movies")
 public class MovieController {
+    private static final Logger LOGGER = LogManager.getLogger(MovieController.class);
     private final MovieService movieService;
     private final MovieMapper movieMapper;
 
@@ -29,6 +33,7 @@ public class MovieController {
     public String addMovie(@RequestBody @Valid MovieRequestDto movieRequestDto) {
         Movie movie = movieMapper.createMovie(movieRequestDto);
         movieService.add(movie);
+        LOGGER.log(Level.INFO, "Movie was added");
         return "Movie was added";
     }
 

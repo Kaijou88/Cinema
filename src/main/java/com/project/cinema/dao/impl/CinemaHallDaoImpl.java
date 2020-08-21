@@ -7,39 +7,22 @@ import java.util.List;
 import javax.persistence.criteria.CriteriaQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class CinemaHallDaoImpl implements CinemaHallDao {
+public class CinemaHallDaoImpl extends GenericDaoImpl<CinemaHall> implements CinemaHallDao {
     private final SessionFactory sessionFactory;
 
     @Autowired
     public CinemaHallDaoImpl(SessionFactory sessionFactory) {
+        super(sessionFactory);
         this.sessionFactory = sessionFactory;
     }
 
     @Override
     public CinemaHall add(CinemaHall cinemaHall) {
-        Transaction transaction = null;
-        Session session = null;
-        try {
-            session = sessionFactory.openSession();
-            transaction = session.beginTransaction();
-            session.save(cinemaHall);
-            transaction.commit();
-            return cinemaHall;
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw new DataProcessingException("Can't insert Cinema Hall entity", e);
-        } finally {
-            if (session != null) {
-                session.close();
-            }
-        }
+        return super.add(cinemaHall);
     }
 
     @Override
@@ -52,5 +35,10 @@ public class CinemaHallDaoImpl implements CinemaHallDao {
         } catch (Exception e) {
             throw new DataProcessingException("Error retrieving all cinema halls", e);
         }
+    }
+
+    @Override
+    public CinemaHall findById(Long id) {
+        return super.findById(id, CinemaHall.class);
     }
 }

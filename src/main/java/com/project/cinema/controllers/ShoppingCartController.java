@@ -8,6 +8,9 @@ import com.project.cinema.service.MovieSessionService;
 import com.project.cinema.service.ShoppingCartService;
 import com.project.cinema.service.UserService;
 import javax.validation.Valid;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/shopping-carts")
 public class ShoppingCartController {
+    private static final Logger LOGGER = LogManager.getLogger(ShoppingCartController.class);
     private final ShoppingCartService shoppingCartService;
     private final MovieSessionService movieSessionService;
     private final UserService userService;
@@ -41,6 +45,7 @@ public class ShoppingCartController {
         shoppingCartService.addSession(movieSessionService
                 .findById(shoppingCartRequestDto.getMovieSessionId()),
                 userService.findByEmail(email));
+        LOGGER.log(Level.INFO, "Movie session was added to shopping cart");
         return "Movie session was added to shopping cart";
     }
 

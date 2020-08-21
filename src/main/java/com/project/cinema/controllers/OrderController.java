@@ -11,6 +11,9 @@ import com.project.cinema.service.UserService;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/orders")
 public class OrderController {
+    private static final Logger LOGGER = LogManager.getLogger(OrderController.class);
     private final OrderService orderService;
     private final UserService userService;
     private final ShoppingCartService shoppingCartService;
@@ -41,6 +45,7 @@ public class OrderController {
         List<Ticket> tickets = shoppingCartService.getByUser(user).getTickets();
         orderService.completeOrder(tickets, user);
         shoppingCartService.clear(shoppingCartService.getByUser(user));
+        LOGGER.log(Level.INFO, "Order was completed");
         return "Order was completed";
     }
 

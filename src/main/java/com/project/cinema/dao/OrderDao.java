@@ -4,8 +4,6 @@ import com.project.cinema.model.Order;
 import com.project.cinema.model.User;
 import java.util.List;
 
-public interface OrderDao {
-    Order add(Order order);
-
+public interface OrderDao extends GenericDao<Order> {
     List<Order> findByUser(User user);
 }
